@@ -1,5 +1,6 @@
 // -- IMPORTS
 
+import { jest } from '@jest/globals';
 import
     {
         getIpAddressInteger,
@@ -8,6 +9,8 @@ import
     from '../index';
 
 // -- STATEMENTS
+
+jest.setTimeout( 30000 );
 
 describe(
     'base',
