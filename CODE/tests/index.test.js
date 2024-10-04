@@ -33,6 +33,8 @@ describe(
                 }
 
                 await testIpAddress( '157.164.136.250', 'BE' );
+                await testIpAddress( '157.164.136.250', 'BE' );
+                await testIpAddress( '157.164.136.250', 'BE' );
                 await testIpAddress( '2a01:690:35:100::f5:79', 'BE' );
                 await testIpAddress( '195.244.180.40', 'BE' );
                 await testIpAddress( '2001:a88:8:10::90', 'GB' );

@@ -1,7 +1,7 @@
 {
     "name": "senselogic-spot",
     "description": "Reusable GeoIP base functions.",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "author": "Eric Pelzer <ecstatic.coder@gmail.com>",
     "license": "LGPL-3.0-only",
     "repository": {
@@ -22,7 +22,7 @@
         "spot"
     ],
     "dependencies": {
-        "senselogic-gist": "^3.0.3"
+        "senselogic-gist": "^3.0.4"
     },
     "devDependencies": {
         "jest": "^29.7.0"

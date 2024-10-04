@@ -9,14 +9,15 @@ import
         getCapitalLongitudeFromCountryCode,
         getContinentCodeFromCountryCode,
         getContinentSlugFromContinentCode,
-        getTimeZoneFromLocation
+        getTimeZoneFromLocation,
+        CappedMap
     }
     from 'senselogic-gist';
 
 // -- VARIABLES
 
 export let
-    updateMillisecondCount = 2 * 24 * 3600000,
+    cachedIpAddressCount = 200,
     ipRangeArrayFolderPath = './',
     ipv4RangeFileName = 'asn-country-ipv4-num.csv',
     ipv4RangeFileUrl = 'https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-geo-whois-asn-country/geolite2-geo-whois-asn-country-ipv4-num.csv',
@@ -25,7 +26,9 @@ export let
     ipv6RangeFileName = 'asn-country-ipv6-num.csv',
     ipv6RangeFileUrl = 'https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-geo-whois-asn-country/geolite2-geo-whois-asn-country-ipv6-num.csv',
     ipv6RangeArray = [],
-    ipv6RangeArrayTimestamp = null;
+    ipv6RangeArrayTimestamp = null,
+    locationByIpAddressCappedMap = null,
+    updateMillisecondCount = 2 * 24 * 3600000;
 
 // -- FUNCTIONS
 
@@ -143,7 +146,7 @@ export function getFileTimestamp(
 
 // ~~
 
-export async function downloadFile(
+export async function updateFile(
     fileUrl,
     filePath
     )
@@ -152,7 +155,7 @@ export async function downloadFile(
 
     if ( currentDate - getFileTimestamp( filePath ) > updateMillisecondCount )
     {
-        console.log( `Downloading ${ filePath } from ${ fileUrl }` );
+        console.log( `Updating ${ filePath }` );
 
         return (
             new Promise(
@@ -310,7 +313,7 @@ export async function getCountryCodeFromIpAddress(
         if ( ipv4RangeArray.length === 0
              || currentDate - ipv4RangeArrayTimestamp > updateMillisecondCount )
         {
-            await downloadFile( ipv4RangeFileUrl, ipv4RangeFilePath );
+            await updateFile( ipv4RangeFileUrl, ipv4RangeFilePath );
             await readIpv4RangeFile( ipv4RangeFilePath );
         }
 
@@ -324,7 +327,7 @@ export async function getCountryCodeFromIpAddress(
         if ( ipv6RangeArray.length === 0
              || currentDate - ipv6RangeArrayTimestamp > updateMillisecondCount )
         {
-            await downloadFile( ipv6RangeFileUrl, ipv6RangeFilePath );
+            await updateFile( ipv6RangeFileUrl, ipv6RangeFilePath );
             await readIpv6RangeFile( ipv6RangeFilePath );
         }
 
@@ -344,47 +347,59 @@ export async function getLocationFromIpAddress(
     ipAddress
     )
 {
-    let location =
-        {
-            countryCode : '',
-            continentCode : '',
-            continentSlug : '',
-            latitude : 0.0,
-            longitude : 0.0,
-            timeZone : '',
-            isFound : false,
-            isAntarctica : false,
-            isSouthAmerica : false,
-            isCentralAmerica : false,
-            isNorthAmerica : false,
-            isAmerica : false,
-            isAfrica : false,
-            isEurope : false,
-            isOceania : false,
-            isAsia : false,
-            isJapan : false
-        };
-
-    location.countryCode = await getCountryCodeFromIpAddress( ipAddress );
-
-    if ( location.countryCode !== '' )
+    if ( locationByIpAddressCappedMap === null )
     {
-        location.continentCode = getContinentCodeFromCountryCode( location.countryCode );
-        location.continentSlug = getContinentSlugFromContinentCode( location.continentCode );
-        location.latitude = getCapitalLatitudeFromCountryCode( location.countryCode );
-        location.longitude = getCapitalLongitudeFromCountryCode( location.countryCode );
-        location.timeZone = getTimeZoneFromLocation( location.latitude, location.longitude, location.countryCode );
-        location.isFound = true;
-        location.isAntarctica = ( location.continentCode === 'AN' );
-        location.isSouthAmerica = ( location.continentCode === 'SA' );
-        location.isCentralAmerica = ( location.continentCode === 'CA' );
-        location.isNorthAmerica = ( location.continentCode === 'NA' );
-        location.isAmerica = ( location.isSouthAmerica || location.isCentralAmerica || location.isNorthAmerica );
-        location.isAfrica = ( location.continentCode === 'AF' );
-        location.isEurope = ( location.continentCode === 'EU' );
-        location.isOceania = ( location.continentCode === 'OC' );
-        location.isAsia = ( location.continentCode === 'AS' );
-        location.isJapan = ( location.countryCode === 'JP' );
+        locationByIpAddressCappedMap = new CappedMap( cachedIpAddressCount );
+    }
+
+    let location = locationByIpAddressCappedMap.get( ipAddress );
+
+    if ( location === undefined )
+    {
+        location =
+            {
+                countryCode : '',
+                continentCode : '',
+                continentSlug : '',
+                latitude : 0.0,
+                longitude : 0.0,
+                timeZone : '',
+                isFound : false,
+                isAntarctica : false,
+                isSouthAmerica : false,
+                isCentralAmerica : false,
+                isNorthAmerica : false,
+                isAmerica : false,
+                isAfrica : false,
+                isEurope : false,
+                isOceania : false,
+                isAsia : false,
+                isJapan : false
+            };
+
+        location.countryCode = await getCountryCodeFromIpAddress( ipAddress );
+
+        if ( location.countryCode !== '' )
+        {
+            location.continentCode = getContinentCodeFromCountryCode( location.countryCode );
+            location.continentSlug = getContinentSlugFromContinentCode( location.continentCode );
+            location.latitude = getCapitalLatitudeFromCountryCode( location.countryCode );
+            location.longitude = getCapitalLongitudeFromCountryCode( location.countryCode );
+            location.timeZone = getTimeZoneFromLocation( location.latitude, location.longitude, location.countryCode );
+            location.isFound = true;
+            location.isAntarctica = ( location.continentCode === 'AN' );
+            location.isSouthAmerica = ( location.continentCode === 'SA' );
+            location.isCentralAmerica = ( location.continentCode === 'CA' );
+            location.isNorthAmerica = ( location.continentCode === 'NA' );
+            location.isAmerica = ( location.isSouthAmerica || location.isCentralAmerica || location.isNorthAmerica );
+            location.isAfrica = ( location.continentCode === 'AF' );
+            location.isEurope = ( location.continentCode === 'EU' );
+            location.isOceania = ( location.continentCode === 'OC' );
+            location.isAsia = ( location.continentCode === 'AS' );
+            location.isJapan = ( location.countryCode === 'JP' );
+
+            locationByIpAddressCappedMap.set( ipAddress, location );
+        }
     }
 
     return location;

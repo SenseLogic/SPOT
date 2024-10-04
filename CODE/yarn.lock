@@ -1908,10 +1908,10 @@ semver@^7.5.3, semver@^7.5.4:
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.3.tgz#980f7b5550bc175fb4dc09403085627f9eb33143"
   integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
 
-senselogic-gist@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/senselogic-gist/-/senselogic-gist-3.0.3.tgz#d67e67a2c3e82d40acae7b8349b034a660e17b0b"
-  integrity sha512-xILcCnH70uSNAap6h5aiyewOIfDmnR+0KtkNwec5x6MWTg9WlyDr+DLtpQtSCOFi0eoSHHEQCLovuWoxyqTY1Q==
+senselogic-gist@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/senselogic-gist/-/senselogic-gist-3.0.4.tgz#f200c707990bed9bdc9c41b138b34bdd15343ae9"
+  integrity sha512-VZrhXU8XtGP80UZk16LfQSMGbWxohsBrVn1EhYkxrqvUodcORYRknDhyFm4EOHfhVaIUm+u8gVM3akkDIippjw==
   dependencies:
     md5 "^2.3.0"
 
