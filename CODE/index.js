@@ -19,11 +19,11 @@ import
 export let
     cachedIpAddressCount = 200,
     ipRangeArrayFolderPath = './',
-    ipv4RangeFileName = 'asn-country-ipv4-num.csv',
+    ipv4RangeFileName = 'geolite2-geo-whois-asn-country-ipv4-num.csv',
     ipv4RangeFileUrl = 'https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-geo-whois-asn-country/geolite2-geo-whois-asn-country-ipv4-num.csv',
     ipv4RangeArray = [],
     ipv4RangeArrayTimestamp = null,
-    ipv6RangeFileName = 'asn-country-ipv6-num.csv',
+    ipv6RangeFileName = 'geolite2-geo-whois-asn-country-ipv6-num.csv',
     ipv6RangeFileUrl = 'https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-geo-whois-asn-country/geolite2-geo-whois-asn-country-ipv6-num.csv',
     ipv6RangeArray = [],
     ipv6RangeArrayTimestamp = null,
